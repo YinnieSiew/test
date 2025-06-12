@@ -8,4 +8,4 @@ RUN apt-get update && \
 COPY . /app
 WORKDIR /app
 
-CMD ["gunicorn", "Website.main:app"]
+CMD ["gunicorn", "main:app", "--bind", "0.0.0.0:10000"]
