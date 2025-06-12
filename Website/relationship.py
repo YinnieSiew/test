@@ -60,7 +60,6 @@ def generate_graph(relations, filename='cat_relationship_tree'):
 
 
 @relationship_bp.route('/relationship_feature', methods=['GET', 'POST'])
-@login_required
 def relationship_feature():
     conn = get_db_connection()
     cursor = conn.cursor()
