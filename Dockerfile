@@ -1,11 +1,13 @@
-FROM python:3.11-slim
+FROM python:3.10-slim
+
+WORKDIR /app
+
+COPY . .
 
 RUN apt-get update && \
     apt-get install -y graphviz && \
+    pip install --upgrade pip && \
     pip install --no-cache-dir gunicorn && \
     pip install --no-cache-dir -r requirements.txt
 
-COPY . /app
-WORKDIR /app
-
-CMD ["gunicorn", "main:app", "--bind", "0.0.0.0:10000"]
+CMD ["gunicorn", "-w", "4", "-b", "0.0.0.0:8000", "main:app"]
