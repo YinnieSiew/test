@@ -2,7 +2,7 @@ import os
 import sqlite3
 import random
 from flask import flash, Blueprint, render_template, request, redirect, url_for, current_app
-from flask_login import current_user
+from flask_login import login_required, current_user
 from graphviz import Digraph
 
 
@@ -60,6 +60,7 @@ def generate_graph(relations, filename='cat_relationship_tree'):
 
 
 @relationship_bp.route('/relationship_feature', methods=['GET', 'POST'])
+@login_required
 def relationship_feature():
     conn = get_db_connection()
     cursor = conn.cursor()
