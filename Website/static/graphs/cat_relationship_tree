@@ -3,6 +3,26 @@ digraph {
 	node [margin="0.2,0.2" shape=none]
 	dpi=80 margin=0.5 pad=0.5
 	edge [arrowsize=0.6 penwidth=1.2]
+	Baka [label=<
+                <TABLE BORDER="0" CELLBORDER="0" CELLSPACING="0" ALIGN="CENTER">
+                <TR><TD>[PIC]</TD></TR>
+                <TR><TD HEIGHT="30">Baka</TD></TR>
+                </TABLE>
+                >]
+	Solistice [label=<
+                <TABLE BORDER="0" CELLBORDER="0" CELLSPACING="0" ALIGN="CENTER">
+                <TR><TD>[PIC]</TD></TR>
+                <TR><TD HEIGHT="30">Solistice</TD></TR>
+                </TABLE>
+                >]
+	Baka -> Solistice [label=Partner dir=both]
+	Serious [label=<
+                <TABLE BORDER="0" CELLBORDER="0" CELLSPACING="0" ALIGN="CENTER">
+                <TR><TD>[PIC]</TD></TR>
+                <TR><TD HEIGHT="30">Serious</TD></TR>
+                </TABLE>
+                >]
+	Baka -> Serious [label=Offspring dir=both]
 	Troublemeow [label=<
                 <TABLE BORDER="0" CELLBORDER="0" CELLSPACING="0" ALIGN="CENTER">
                 <TR><TD>[PIC]</TD></TR>
@@ -16,4 +36,5 @@ digraph {
                 </TABLE>
                 >]
 	Troublemeow -> Makermeow [label=Neighbour dir=both]
+	Serious -> Baka [label=Offspring dir=forward]
 }

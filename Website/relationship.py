@@ -122,6 +122,7 @@ def relationship_feature():
             return redirect(url_for('relationship.relationship_feature'))
 
     if current_user.is_authenticated:
+        print("current_user.id:", current_user.id)
         try:
             relations = cursor.execute("""
                 SELECT cr.id, cr.catA_id, cr.catB_id, cr.relation_type, cr.direction,
