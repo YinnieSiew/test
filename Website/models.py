@@ -18,14 +18,13 @@ class User(db.Model, UserMixin):
     secret_answer = db.Column(db.String(150), nullable=False) 
 
     notes = db.relationship("Note", backref="user", lazy=True, cascade="all, delete-orphan")
-    stories = db.relationship("Story", backref="owner", lazy=True, cascade="all, delete-orphan", overlaps="user_stories,user")
+    stories = db.relationship("Story", back_populates="user", lazy=True, cascade="all, delete-orphan")    
     reports_made = db.relationship(
         "Report",
         back_populates="reporting_user",
         lazy=True,
         cascade="all, delete-orphan",
         foreign_keys="[Report.user_id]",
-        overlaps="user_reports"
     )
 
     reports_received = db.relationship(
@@ -55,7 +54,7 @@ class Story(db.Model):
     story_text = db.Column(db.Text, nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
-    user = db.relationship("User", backref=db.backref("user_stories", lazy=True, cascade="all, delete-orphan", overlaps="stories"), overlaps="owner,stories")
+    user = db.relationship("User", back_populates="stories")
 
 class Report(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -69,8 +68,8 @@ class Report(db.Model):
     details = db.Column(db.Text, nullable=True)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
-    reporting_user = db.relationship("User", foreign_keys=[user_id], backref="user_reports", overlaps="reports_made")
-    reported_user_profile = db.relationship("User", foreign_keys=[user_profile_id], backref="reported_profiles", overlaps="reports_received")
+    reporting_user = db.relationship("User", foreign_keys=[user_id], back_populates="reports_made")
+    reported_user_profile = db.relationship("User", foreign_keys=[user_profile_id], back_populates="reports_received")
     story = db.relationship("Story", backref="reports", lazy=True)
 
     @property
