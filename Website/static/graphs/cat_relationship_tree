@@ -1,0 +1,19 @@
+// Cat Relationship Tree
+digraph {
+	node [margin="0.2,0.2" shape=none]
+	dpi=80 margin=0.5 pad=0.5
+	edge [arrowsize=0.6 penwidth=1.2]
+	Troublemeow [label=<
+                <TABLE BORDER="0" CELLBORDER="0" CELLSPACING="0" ALIGN="CENTER">
+                <TR><TD>[PIC]</TD></TR>
+                <TR><TD HEIGHT="30">Troublemeow</TD></TR>
+                </TABLE>
+                >]
+	Makermeow [label=<
+                <TABLE BORDER="0" CELLBORDER="0" CELLSPACING="0" ALIGN="CENTER">
+                <TR><TD>[PIC]</TD></TR>
+                <TR><TD HEIGHT="30">Makermeow</TD></TR>
+                </TABLE>
+                >]
+	Troublemeow -> Makermeow [label=Neighbour dir=both]
+}
