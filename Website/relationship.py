@@ -1,6 +1,7 @@
 import os
-os.environ["PATH"] += os.pathsep + "/opt/render/project/.graphviz/bin"
-os.environ["GRAPHVIZ_DOT"] = "/opt/render/project/.graphviz/bin/dot"
+dot_path = os.path.abspath(".graphviz/bin")
+os.environ["PATH"] += os.pathsep + dot_path
+os.environ["GRAPHVIZ_DOT"] = os.path.join(dot_path, "dot")
 
 import sqlite3
 import random
