@@ -1,8 +1,4 @@
 import os
-dot_path = os.path.abspath(".graphviz/bin")
-os.environ["PATH"] += os.pathsep + dot_path
-os.environ["GRAPHVIZ_DOT"] = os.path.join(dot_path, "dot")
-
 import sqlite3
 import random
 from flask import flash, Blueprint, render_template, request, redirect, url_for, current_app
