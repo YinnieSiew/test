@@ -1,9 +1,13 @@
 import os
+os.environ["PATH"] += os.pathsep + "/opt/render/project/.graphviz/bin"
+os.environ["GRAPHVIZ_DOT"] = "/opt/render/project/.graphviz/bin/dot"
+
 import sqlite3
 import random
 from flask import flash, Blueprint, render_template, request, redirect, url_for, current_app
 from flask_login import login_required, current_user
 from graphviz import Digraph
+
 
 
 relationship_bp = Blueprint('relationship', __name__, template_folder='templates')

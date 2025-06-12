@@ -1,8 +1,5 @@
 #!/usr/bin/env bash
-
-if command -v apt-get >/dev/null; then
-  apt-get update
-  apt-get install -y graphviz
-fi
-
-which dot || echo "dot not found"
+mkdir -p .graphviz/bin
+curl -L https://gitlab.com/api/v4/projects/4207231/packages/generic/graphviz-releases/12.2.1/graphviz-12.2.1-linux-amd64.tar.gz | tar -xz -C .graphviz
+export PATH="$PWD/.graphviz/bin:$PATH"
+pip in
