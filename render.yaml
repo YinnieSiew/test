@@ -3,4 +3,4 @@ services:
     name: my-graphviz-app
     env: python
     buildCommand: ./build.sh
-    startCommand: python app.py
+    startCommand: python main.py
