@@ -18,7 +18,7 @@ class User(db.Model, UserMixin):
     secret_answer = db.Column(db.String(150), nullable=False) 
 
     notes = db.relationship("Note", backref="user", lazy=True, cascade="all, delete-orphan")
-    stories = db.relationship("Story", backref="owner", lazy=True, cascade="all, delete-orphan", overlaps="user_stories")
+    stories = db.relationship("Story", backref="owner", lazy=True, cascade="all, delete-orphan", overlaps="user_stories,user")
     reports_made = db.relationship(
         "Report",
         back_populates="reporting_user",
@@ -55,7 +55,7 @@ class Story(db.Model):
     story_text = db.Column(db.Text, nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
-    user = db.relationship("User", backref=db.backref("user_stories", lazy=True, cascade="all, delete-orphan", overlaps="stories"))
+    user = db.relationship("User", backref=db.backref("user_stories", lazy=True, cascade="all, delete-orphan", overlaps="stories"), overlaps="owner,stories")
 
 class Report(db.Model):
     id = db.Column(db.Integer, primary_key=True)
