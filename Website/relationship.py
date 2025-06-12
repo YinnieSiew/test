@@ -133,8 +133,6 @@ def relationship_feature():
         """, (current_user.id,)).fetchall()
     else:
         relations = []
-        flash("You must be logged in to view relationships!", category="error")
-        return redirect(url_for('auth.login'))
 
     graph_svg = generate_graph(relations)
     cat_photos = {cat['name']: url_for('static', filename=f'uploads/{cat["photo"]}' if cat["photo"] else 'uploads/default.png') for cat in all_cats}
