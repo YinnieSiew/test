@@ -122,15 +122,19 @@ def relationship_feature():
             return redirect(url_for('relationship.relationship_feature'))
 
     if current_user.is_authenticated:
-        relations = cursor.execute("""
-            SELECT cr.id, cr.catA_id, cr.catB_id, cr.relation_type, cr.direction,
-                p1.name AS catA_name, p1.photo AS catA_photo,
-                p2.name AS catB_name, p2.photo AS catB_photo
-            FROM cat_relationship cr
-            JOIN profiles p1 ON cr.catA_id = p1.id
-            JOIN profiles p2 ON cr.catB_id = p2.id
-            WHERE cr.user_id = ?
-        """, (current_user.id,)).fetchall()
+        try:
+            relations = cursor.execute("""
+                SELECT cr.id, cr.catA_id, cr.catB_id, cr.relation_type, cr.direction,
+                    p1.name AS catA_name, p1.photo AS catA_photo,
+                    p2.name AS catB_name, p2.photo AS catB_photo
+                FROM cat_relationship cr
+                JOIN profiles p1 ON cr.catA_id = p1.id
+                JOIN profiles p2 ON cr.catB_id = p2.id
+                WHERE cr.user_id = ?
+            """, (current_user.id,)).fetchall()
+        except Exception as e:
+            print("Error querying relations:", e)
+            relations = []
     else:
         relations = []
 
