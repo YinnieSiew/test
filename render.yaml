@@ -1,8 +1,8 @@
 services:
   - type: web
-    name: my-graphviz-app
+    name: your-service-name
     env: python
-    buildCommand: ./build.sh
-    startCommand: python main.py
-
-    apt-get update && apt-get install -y graphviz
+    buildCommand: |
+      apt-get update && apt-get install -y graphviz
+      pip install -r requirements.txt
+    startCommand: gunicorn Website.main:app
