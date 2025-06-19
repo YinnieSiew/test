@@ -36,8 +36,8 @@ def generate_graph(relations, cat_photos, filename='cat_relationship_tree'):
     dot.attr('node', shape="none", margin='0.1,0.1')
     dot.attr('edge', arrowsize='0.5', penwidth='0.7')
 
-    added_nodes = set()    # Used to track added nodes to prevent duplication
-
+    added_nodes = set()    #
+    
     for rel in relations:
         for cat_id, cat_name, cat_photo in [
             (rel['catA_id'], rel['catA_name'], rel['catA_photo']),
