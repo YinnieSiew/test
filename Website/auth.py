@@ -17,6 +17,7 @@ auth = Blueprint("auth", __name__) #a Blueprint for authentication routes, Bluep
 UPLOAD_FOLDER = 'Website/static/Userprofile'
 UPLOADFOLDER = 'Website/static/story'
 POSTS_FOLDER = 'Website/static/posts'
+COMMENTS_FOLDER = 'Website/static/comments'
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
 
 DEFAULT_PROFILE_PICTURE = "default_profilepic.png"
@@ -661,8 +662,6 @@ def delete_post(post_id):
     conn.execute('DELETE FROM post WHERE post_id = ?', (post_id,))
     conn.commit()
 
-
-
     #remove all media file if applicable
     media_files = post['media_url']
     if media_files:
@@ -683,9 +682,17 @@ def delete_comment(id):
     conn = get_db_connection()
 
     def delete_with_replies(comment_id):
+        comment = conn.execute('SELECT media_url FROM comment WHERE id = ?', (comment_id,)).fetchone()
         child_comments = conn.execute('SELECT id FROM comment WHERE parent_id = ?', (comment_id,)).fetchall()
         for child in child_comments:
             delete_with_replies(child[0])
+
+        if comment and comment['media_url']:
+            filename = os.path.basename(comment['media_url'])
+            filepath = os.path.join(COMMENTS_FOLDER, filename)
+            if os.path.exists(filepath):
+                os.remove(filepath)
+
         conn.execute('DELETE FROM comment_like WHERE comment_id = ?', (comment_id,))  
         conn.execute('DELETE FROM comment WHERE id = ?', (comment_id,))
     

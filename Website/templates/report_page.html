@@ -71,8 +71,7 @@
         resize: none;
     }
 
-    .submit-button,
-    .back-button {
+    .submit-button {
         text-align: center;
         background-color: rgb(176, 148, 119);
         color: white;
@@ -85,10 +84,22 @@
         transition: 0.3s ease;
     }
 
-    .submit-button:hover,
-    .back-button:hover {
+    .submit-button:hover {
         background-color: rgb(156, 128, 100);
         transform: scale(1.05);
+    }
+
+    .back-button {
+        display: inline-block;
+        color: rgb(78, 68, 57);
+        text-decoration: none;
+        padding: 10px 20px;
+    }
+
+    .back-button:hover {
+        text-decoration: underline;
+        color: rgb(62, 55, 48);
+        background: #e3d9cc;
     }
 
 </style>
@@ -126,9 +137,20 @@
 
         <button type="submit" class="submit-button">🐾Submit Report🐾</button>
 
-        <button class="back-button" onclick="history.back();">
-            Back
-        </button>
+        <!-- Back button dynamically adjusted based on report type -->
+        {% if report_type == 'post' %}
+            <a href="{{ url_for('community.post_detail', post_id=item_id) }}" class="back-button">Back</a>
+        {% elif report_type == 'story' %}
+            <a href="{{ url_for('auth.view_story', story_id=item_id) }}" class="back-button">Back</a>
+        {% elif report_type == 'comment' %}
+            <a href="{{ url_for('community.post_detail', post_id=post_id) }}#comment-{{ item_id }}" class="back-button">Back</a>
+        {% elif report_type == 'profiles' %}
+            <a href="{{ url_for('catprofile.view_profile', profile_id=item_id) }}" class="back-button">Back</a>
+        {% elif report_type == 'user_profile' %}
+            <a href="{{ url_for('auth.view_user_profile', user_id=item_id) }}" class="back-button">Back</a>
+        {% else %}
+            <a href="{{ url_for('views.home') }}" class="back-button">Back</a>
+        {% endif %}
         
     </form>
 </div>

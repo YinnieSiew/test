@@ -363,6 +363,54 @@
 </div>
 
 <hr>
+<div class="main-content-row">
+    <div class="latest-stories-container">
+        <h2
+            style="font-weight: bold; color: rgb(78, 68, 57); font-family: Times New Roman; padding-bottom: 10px; text-align: center;">
+            📖Latest Cat Stories</h2>
+        <div class="latest-stories-grid">
+            {% for story in stories %}
+            <div class="latest-story-box">
+                <a href="{{ url_for('auth.view_story', story_id=story.id) }}">
+                    <img src="{{ url_for('auth.uploaded_file', filename=story.image_filename) }}" alt="Story Image">
+                </a>
+                <h3 class="latest-story-title">
+                    <a href="{{ url_for('auth.view_story', story_id=story.id) }}">{{ story.caption }}</a>
+                </h3>
+            </div>
+            {% endfor %}
+        </div>
+        <div class="view-stories-link">
+            <a href="{{ url_for('auth.cat_story') }}">📓More Cat Stories</a>
+        </div>
+    </div>
+
+    <div class="popular-post-container">
+        <h2
+            style="font-weight: bold; color: rgb(78, 68, 57); font-family: Times New Roman; padding-bottom: 10px; text-align: center;">
+            ⭐ Most Liked Post</h2>
+        <div class="popular-post-grid">
+            <a href="{{ url_for('community.post_detail', post_id=popular_post.post_id) }}">
+                <div class="popular-post-box">
+                    {% if popular_post.media_url %}
+                    {% set ext = popular_post.media_url .rsplit('.', 1)[1].lower() %}
+                    {% if ext in ['jpg', 'jpeg', 'png', 'gif'] %}
+                    <img src="{{ url_for('static', filename=popular_post.media_url) }}" alt="Image">
+                    {% elif ext in ['mp4', 'mov', 'avi'] %}
+                    <video controls>
+                        <source src="{{ url_for('static', filename=popular_post.media_url) }}" type="video/{{ ext }}">
+                    </video>
+                    {% endif %}
+                    {% endif %}
+                    <h3 class="popular-post-title">{{ popular_post.content }}</h3>
+                </div>
+            </a>
+        </div>
+        <div class="view-post-link">
+            <a href="{{ url_for('community.community_feature') }}">🧭Explore More Posts</a>
+        </div>
+    </div>
+</div>
 
 <footer>
     <div class="footer-container">

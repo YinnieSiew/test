@@ -427,6 +427,13 @@
         box-shadow: none;
     }
 
+    .inline-form {
+        display: inline;
+    }
+
+    .hidden-input {
+        display: none;
+    }
 </style>
 
 <h1>Post Details</h1>
@@ -444,7 +451,7 @@
                 {% if user.role == 'user' %}
                     <a href="{{ url_for('auth.report_page', report_type='post', item_id=post['post_id']) }}">Report Post</a>
                 {% elif user.role == 'admin' %}
-                    <form action="{{ url_for('auth.delete_post', post_id=post['post_id']) }}" method="post" style="display: inline;">
+                    <form action="{{ url_for('auth.delete_post', post_id=post['post_id']) }}" method="post" class="inline-form">
                         <button type="submit" class="delete-btn">
                             Delete Post
                         </button>
@@ -494,7 +501,7 @@
         </div>
 
         <div class="post-actions">
-            <form id="like-form-{{ post['post_id'] }}" action="{{ url_for('community.like_post' if not post['liked_by_current_user'] else 'community.unlike_post', post_id=post['post_id']) }}" method="post" style="display:inline;">
+            <form id="like-form-{{ post['post_id'] }}" action="{{ url_for('community.like_post' if not post['liked_by_current_user'] else 'community.unlike_post', post_id=post['post_id']) }}" method="post" class="inline-form">
                 <input type="hidden" name="sort" value="{{ sort }}">
                 <button type="submit" class="post-action-button">
                     {% if post['liked_by_current_user'] %}
@@ -516,8 +523,8 @@
 
 <hr>
 
-<!-- Comment List -->
 
+<!-- Displaying comments section and using macro to render comments -->
 <h3 id="comments">Comments List</h3>
 
 {% macro render_comments(comments, grouped_comments) %}
@@ -533,7 +540,7 @@
                 </span>
 
                     {% if user.is_authenticated and user.role == 'admin' %}
-                        <form action="{{ url_for('auth.delete_comment', id=comment['id']) }}" method="post" style="display:inline;">
+                        <form action="{{ url_for('auth.delete_comment', id=comment['id']) }}" method="post" class="inline-form">
                             <button type="submit" class="admin-comment-action-button">
                                 Delete Comment
                             </button>
@@ -564,7 +571,7 @@
                 {% endif %}
 
                 <div class="comment-actions">
-                    <form id="like-form-{{ comment['id'] }}" action="{{ url_for('community.like_comment' if not comment['liked_by_current_user'] else 'community.unlike_comment', comment_id=comment['id']) }}" method="post" style="display:inline;">
+                    <form id="like-form-{{ comment['id'] }}" action="{{ url_for('community.like_comment' if not comment['liked_by_current_user'] else 'community.unlike_comment', comment_id=comment['id']) }}" method="post" class="inline-form">
                         <button type="submit" class="comment-action-button">
                             {% if comment['liked_by_current_user'] %}
                                 ❤️ 
@@ -584,14 +591,14 @@
                     <span class="separator">|</span>
 
                     {% if comment['user_id'] == user.id %}
-                        <form action="{{ url_for('community.delete_comment', comment_id=comment['id']) }}" method="post" style="display:inline;">
+                        <form action="{{ url_for('community.delete_comment', comment_id=comment['id']) }}" method="post" class="inline-form">
                             <button type="submit" class="comment-action-button" onclick="return confirm('Are you sure you want to delete this comment?');">
                                 🗑️ Delete
                             </button>
                         </form>
                     {% else %}
                         {% if user.is_authenticated and user.role == 'user' %}
-                            <form action="{{ url_for('auth.report_page', report_type='comment', item_id=comment['id']) }}" method="post" style="display:inline;">
+                            <form action="{{ url_for('auth.report_page', report_type='comment', item_id=comment['id']) }}" method="post" class="inline-form">
                                 <button type="submit" class="comment-action-button" onclick="return confirm('Are you sure you want to report this comment?');">
                                     ⚠️ Report
                                 </button>
@@ -612,6 +619,7 @@
     {% endfor %}
 {% endmacro %}
 
+<!-- Call the render_comments macro for displaying top-level comments -->
 {{ render_comments(grouped_comments[None], grouped_comments) }}
 
 <div class="comment-form-container">
@@ -622,13 +630,14 @@
         <label for="comment-media" class="file-upload-label">
             <img src="{{ url_for('static', filename='paperclip.png') }}" alt="Attach File" class="paperclip-icon">
         </label>
-        <input type="file" id="comment-media" name="media" accept="image/*,video/*" style="display: none;">
+        <input type="file" id="comment-media" name="media" accept="image/*,video/*" class="hidden-input">
         <button type="submit">Submit Comment</button>
     </form>
 </div>
 
 
 <script>
+// Display file name when a file is selected for upload
 document.addEventListener('DOMContentLoaded', function () {
     const fileInput = document.getElementById('comment-media');
     const fileNameDisplay = document.getElementById('file-name-display');
@@ -643,16 +652,20 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 });
 
+
+// Comment section functionality - opening and filling the reply form
 document.addEventListener('DOMContentLoaded', function () {
     const commentButton = document.getElementById('comment-button');
     const replyButtons = document.querySelectorAll('.reply-button');
     const commentTextarea = document.getElementById('comment-textarea');
     const parentIdInput = document.getElementById('parent-id');
 
+    // Focus on the comment textarea when the comment button is clicked
     commentButton.addEventListener('click', function () {
         commentTextarea.focus();
     });        
 
+    // Handle the reply button click to pre-fill the comment textarea with the floor number
     replyButtons.forEach(button => {
         button.addEventListener('click', function () {
             const commentId = button.getAttribute('data-comment-id');
@@ -661,21 +674,20 @@ document.addEventListener('DOMContentLoaded', function () {
             if (floorSpan) {
                 floorText = floorSpan.textContent.trim();
             }
-            parentIdInput.value = commentId; 
-            commentTextarea.value = `Replying to ${floorText} `;
+            parentIdInput.value = commentId;  // Set parent comment ID
+            commentTextarea.value = `Replying to ${floorText} `;  // Pre-fill the textarea
             commentTextarea.focus();
         });
     });
 
+    // Clear parent ID if no comment text is entered
     const commentForm = document.getElementById('comment-form');
     commentForm.addEventListener('submit', function () {
         if (!commentTextarea.value.trim()) {
-            parentIdInput.value = '';
+            parentIdInput.value = ''; // Reset parent ID if no comment text
         }
     });
 });
-
-
 </script>
 
 {% endblock %}

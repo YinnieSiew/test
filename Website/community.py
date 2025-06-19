@@ -226,15 +226,15 @@ def my_posts():
     
     conn = get_db_connection()
     posts = conn.execute('''
-        SELECT post.*, user.name, user.profile_picture,
-            COUNT(likes.id) AS like_count,
-            COUNT(comment.id) AS comment_count
+        SELECT 
+            post.*, 
+            user.name, 
+            user.profile_picture,
+            (SELECT COUNT(*) FROM likes WHERE likes.post_id = post.post_id) AS like_count,
+            (SELECT COUNT(*) FROM comment WHERE comment.post_id = post.post_id) AS comment_count
         FROM post
         JOIN user ON post.user_id = user.id
-        LEFT JOIN likes ON post.post_id = likes.post_id
-        LEFT JOIN comment ON post.post_id = comment.post_id 
         WHERE post.user_id = ?
-        GROUP BY post.post_id
         ORDER BY post.created_at DESC
     ''', (current_user.id,)).fetchall()
     conn.close()
@@ -446,11 +446,20 @@ def delete_comment(comment_id):
     conn = get_db_connection()
 
     def delete_with_replies(comment_id):
+        comment = conn.execute('SELECT media_url FROM comment WHERE id = ?', (comment_id,)).fetchone()
+
         child_comments = conn.execute('SELECT id FROM comment WHERE parent_id = ?', (comment_id,)).fetchall()
         for child in child_comments:
             delete_with_replies(child['id'])
+
+        if comment and comment['media_url']:
+            filename = os.path.basename(comment['media_url'])
+            filepath = os.path.join(COMMENTS_FOLDER, filename)
+            if os.path.exists(filepath):
+                os.remove(filepath)
+
         conn.execute('DELETE FROM comment_like WHERE comment_id = ?', (comment_id,))            
-        conn.execute('DELETE FROM comment WHERE id = ?', (comment_id,))
+        conn.execute('DELETE FROM comment WHERE id = ?', (comment_id,)) 
     
     delete_with_replies(comment_id)
 

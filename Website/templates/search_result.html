@@ -291,7 +291,8 @@
                 <option value="name_asc" {% if request.args.get('sort') == 'name_asc' %}selected{% endif %}>Name (A-Z)</option>
                 <option value="name_desc" {% if request.args.get('sort') == 'name_desc' %}selected{% endif %}>Name (Z-A)</option>
             </select>
-            <input type="hidden" name="name" value="{{ request.args.get('name', '') }}">
+            <input type="hidden" name="search_type" value="cat">
+            <input type="hidden" name="keyword" value="{{ request.args.get('keyword', '') }}">
             <input type="hidden" name="gender" value="{{ request.args.get('gender', '') }}">
             <input type="hidden" name="color" value="{{ request.args.get('color', '') }}">
         </form>

@@ -116,9 +116,10 @@
         text-overflow: ellipsis; 
     }
 
+    /* Media grid layout for displaying images and videos */
     .media-grid {
         display: grid;
-        grid-template-columns: repeat(3, 1fr);
+        grid-template-columns: repeat(3, 1fr);   /* Create 3 equal columns */
         gap: 8px;
         width: 100%;
         max-width: 600px;
@@ -141,6 +142,7 @@
         object-fit: cover;
     }
 
+    /* Overlay for displaying additional media count */
     .more-overlay {
         position: absolute;
         top: 0; left: 0; right: 0; bottom: 0;
@@ -242,15 +244,30 @@
         resize: none;  
     }
 
+    .relative-container {
+        position: relative;
+    }
+
+    .word-count-tip {
+        position: absolute;
+        right: 10px;
+        bottom: 20px;
+        font-size: 14px;
+        color: #94693e;
+        background: #eae8e6;
+    }
+
     input[type="file"] {
         margin-bottom: 10px;
     }
-
 
     .hidden {
         display: none;
     }
 
+    .inline-form {
+        display: inline;
+    }
 </style>
 
 <h1>Meow Meow Community</h1>
@@ -316,7 +333,7 @@
             </div>
 
             <div class="post-actions">
-                <form id="like-form-{{ post['post_id'] }}" action="{{ url_for('community.like_post' if not post['liked_by_current_user'] else 'community.unlike_post', post_id=post['post_id']) }}" method="post" style="display:inline;">
+                <form id="like-form-{{ post['post_id'] }}" action="{{ url_for('community.like_post' if not post['liked_by_current_user'] else 'community.unlike_post', post_id=post['post_id']) }}" method="post" class="inline-form">
                     <input type="hidden" name="sort" value="{{ sort }}">
                     <button type="submit" class="post-action-button">
                         {% if post['liked_by_current_user'] %}
@@ -344,9 +361,9 @@
         <span class="close" onclick="closeModal()">&times;</span>
         <h3>New Post</h3>
         <form action="/post/create" method="post" enctype="multipart/form-data" onsubmit="return checkWordLimit() && checkFilesCount()">
-            <div style="position: relative;">
-                <textarea id="content" name="content" placeholder="Have a meowment to share?" required style="box-sizing: border-box;"></textarea>
-                <div style="position: absolute; right: 10px; bottom: 20px; font-size: 14px; color: #94693e; background: #eae8e6;">
+            <div class="relative-container">
+                <textarea id="content" name="content" placeholder="Have a meowment to share?" required></textarea>
+                <div class="word-count-tip">
                     <span id="word-count">0</span> / 100 words
                 </div>
             </div>
@@ -368,10 +385,12 @@
 
 {% block scripts %}
 <script>
+// Sort posts based on selected criteria (e.g., date or likes)
 function sortPosts() {
     var sortBy = document.getElementById('sort-by').value;
     var currentUrl = window.location.href;
 
+// If on hashtag page, include the hashtag in the redirect URL
     if (currentUrl.includes('/hashtag/')) {
         var hashtag = currentUrl.split('/hashtag/')[1].split('?')[0];
         window.location.href = `/hashtag/${hashtag}?sort=` + sortBy;
@@ -390,12 +409,14 @@ function closeModal() {
     modal.style.display = 'none';
 }
 
+// Update word count while typing in the post content
 document.getElementById('content').addEventListener('input', function() {
     var content = this.value.trim();
     var wordCount = content ? content.split(/\s+/).length : 0;
     document.getElementById('word-count').textContent = wordCount;
 });
 
+// Check if the word count exceeds 100 before submitting the form
 function checkWordLimit() {
     var content = document.getElementById('content').value.trim();
     var wordCount = content.split(/\s+/).filter(Boolean).length;
@@ -406,6 +427,7 @@ function checkWordLimit() {
     return true;
 }
 
+// Check if the user is uploading more than 9 media files
 function checkFilesCount() {
     var input = document.getElementById('media-input');
     if (input.files.length > 9) {

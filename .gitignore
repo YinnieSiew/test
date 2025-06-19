@@ -12,4 +12,6 @@ env/
 "Website/__pycache__/views.cpython-313.pyc" 
 Website/static/graphs/cat_relationship_tree.svg
 Website/static/graphs/*.svg
+Website/static/graphs/
+
 

@@ -1,40 +1,60 @@
 // Cat Relationship Tree
 digraph {
-	node [margin="0.2,0.2" shape=none]
-	dpi=80 margin=0.5 pad=0.5
-	edge [arrowsize=0.6 penwidth=1.2]
-	Baka [label=<
-                <TABLE BORDER="0" CELLBORDER="0" CELLSPACING="0" ALIGN="CENTER">
-                <TR><TD>[PIC]</TD></TR>
+	rankdir=TB
+	size="3,3!"
+	node [margin="0.1,0.1" shape=none]
+	edge [arrowsize=0.5 penwidth=0.7]
+	Baka [label=<   
+                <TABLE BORDER="0" CELLBORDER="0" CELLSPACING="0">
+                <TR><TD FIXEDSIZE="TRUE" WIDTH="50" HEIGHT="50"><IMG SRC="C:\Users\User\Projects\MeowMeowU\Website\static\uploads\baka_cat1.jpeg" SCALE="TRUE"/></TD></TR>
                 <TR><TD HEIGHT="30">Baka</TD></TR>
                 </TABLE>
                 >]
-	Solistice [label=<
-                <TABLE BORDER="0" CELLBORDER="0" CELLSPACING="0" ALIGN="CENTER">
-                <TR><TD>[PIC]</TD></TR>
+	Solistice [label=<   
+                <TABLE BORDER="0" CELLBORDER="0" CELLSPACING="0">
+                <TR><TD FIXEDSIZE="TRUE" WIDTH="50" HEIGHT="50"><IMG SRC="C:\Users\User\Projects\MeowMeowU\Website\static\uploads\little_cat.jpeg" SCALE="TRUE"/></TD></TR>
                 <TR><TD HEIGHT="30">Solistice</TD></TR>
                 </TABLE>
                 >]
 	Baka -> Solistice [label=Partner dir=both]
-	Serious [label=<
-                <TABLE BORDER="0" CELLBORDER="0" CELLSPACING="0" ALIGN="CENTER">
-                <TR><TD>[PIC]</TD></TR>
-                <TR><TD HEIGHT="30">Serious</TD></TR>
-                </TABLE>
-                >]
-	Baka -> Serious [label=Offspring dir=both]
-	Troublemeow [label=<
-                <TABLE BORDER="0" CELLBORDER="0" CELLSPACING="0" ALIGN="CENTER">
-                <TR><TD>[PIC]</TD></TR>
+	Troublemeow [label=<   
+                <TABLE BORDER="0" CELLBORDER="0" CELLSPACING="0">
+                <TR><TD FIXEDSIZE="TRUE" WIDTH="50" HEIGHT="50"><IMG SRC="C:\Users\User\Projects\MeowMeowU\Website\static\uploads\WhatsApp_Image_2025-05-23_at_16.59.07_-_Copy.jpeg" SCALE="TRUE"/></TD></TR>
                 <TR><TD HEIGHT="30">Troublemeow</TD></TR>
                 </TABLE>
                 >]
-	Makermeow [label=<
-                <TABLE BORDER="0" CELLBORDER="0" CELLSPACING="0" ALIGN="CENTER">
-                <TR><TD>[PIC]</TD></TR>
+	Makermeow [label=<   
+                <TABLE BORDER="0" CELLBORDER="0" CELLSPACING="0">
+                <TR><TD FIXEDSIZE="TRUE" WIDTH="50" HEIGHT="50"><IMG SRC="C:\Users\User\Projects\MeowMeowU\Website\static\uploads\WhatsApp_Image_2025-05-23_at_16.59.07_1.jpeg" SCALE="TRUE"/></TD></TR>
                 <TR><TD HEIGHT="30">Makermeow</TD></TR>
                 </TABLE>
                 >]
-	Troublemeow -> Makermeow [label=Neighbour dir=both]
-	Serious -> Baka [label=Offspring dir=forward]
+	Troublemeow -> Makermeow [label=Friend dir=both]
+	Sleppymeow [label=<   
+                <TABLE BORDER="0" CELLBORDER="0" CELLSPACING="0">
+                <TR><TD FIXEDSIZE="TRUE" WIDTH="50" HEIGHT="50"><IMG SRC="C:\Users\User\Projects\MeowMeowU\Website\static\uploads\sleppymeow_miao.jpeg" SCALE="TRUE"/></TD></TR>
+                <TR><TD HEIGHT="30">Sleppymeow</TD></TR>
+                </TABLE>
+                >]
+	Chicken [label=<   
+                <TABLE BORDER="0" CELLBORDER="0" CELLSPACING="0">
+                <TR><TD FIXEDSIZE="TRUE" WIDTH="50" HEIGHT="50"><IMG SRC="C:\Users\User\Projects\MeowMeowU\Website\static\uploads\WhatsApp_Image_2025-06-14_at_17.54.36.jpeg" SCALE="TRUE"/></TD></TR>
+                <TR><TD HEIGHT="30">Chicken</TD></TR>
+                </TABLE>
+                >]
+	Sleppymeow -> Chicken [label="Best Friend" dir=both]
+	Pewpew [label=<   
+                <TABLE BORDER="0" CELLBORDER="0" CELLSPACING="0">
+                <TR><TD FIXEDSIZE="TRUE" WIDTH="50" HEIGHT="50"><IMG SRC="C:\Users\User\Projects\MeowMeowU\Website\static\uploads\little_catpic.jpg" SCALE="TRUE"/></TD></TR>
+                <TR><TD HEIGHT="30">Pewpew</TD></TR>
+                </TABLE>
+                >]
+	Baka -> Pewpew [label=Sibling dir=forward]
+	Serious [label=<   
+                <TABLE BORDER="0" CELLBORDER="0" CELLSPACING="0">
+                <TR><TD FIXEDSIZE="TRUE" WIDTH="50" HEIGHT="50"><IMG SRC="C:\Users\User\Projects\MeowMeowU\Website\static\uploads\serious_cat2.jpeg" SCALE="TRUE"/></TD></TR>
+                <TR><TD HEIGHT="30">Serious</TD></TR>
+                </TABLE>
+                >]
+	Pewpew -> Serious [label=Offspring dir=forward]
 }

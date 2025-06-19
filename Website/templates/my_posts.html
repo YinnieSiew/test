@@ -281,18 +281,18 @@
   Back
 </button>
 
-  <script>
+<script>
 
-  function openEditModal(postId, content, catHashtag) {
-    document.getElementById("editContent").value = content;
-    document.getElementById("editForm").action = `/post/edit/${postId}`;
-    document.getElementById("editCatHashtag").value = catHashtag || "";
-    document.getElementById("editModal").classList.remove("hidden");
-  }
+function openEditModal(postId, content, catHashtag) {
+  document.getElementById("editContent").value = content;
+  document.getElementById("editForm").action = `/post/edit/${postId}`;
+  document.getElementById("editCatHashtag").value = catHashtag || "";
+  document.getElementById("editModal").classList.remove("hidden");
+}
 
-  function closeEditModal() {
-    document.getElementById("editModal").classList.add("hidden");
-  }
-  </script>
+function closeEditModal() {
+  document.getElementById("editModal").classList.add("hidden");
+}
+</script>
 
 {% endblock %}

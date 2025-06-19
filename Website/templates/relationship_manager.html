@@ -198,6 +198,15 @@
         align-items: center;      
     }
 
+    .type {
+        font-weight: bold;
+        font-size: 18px;
+        color: #94693e;
+        white-space: nowrap;
+        width: 70px; 
+        text-align: center;
+    }
+
     .arrow {
         font-size: 35px;  
         color: #94693e; 
@@ -243,12 +252,18 @@
     }
 
     .graph-container {
+        width: 70%;
+        margin: 30px auto;
         display: flex;
         justify-content: center;
         align-items: center;
-        margin: 0 auto;
+    }
+
+    #cat-graph {
+        min-width: 50%;
         max-width: 100%;
-        padding: 1rem;
+        max-height: 700px;
+        display: block;
     }
 
     .button {
@@ -287,7 +302,6 @@
         padding: 50px; 
         border-radius: 20px;
         max-width: 600px;
-        height: 700px; 
         box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
         position: relative;
         border: 2px solid #94693e;
@@ -301,7 +315,6 @@
         margin-bottom: 5px;
     }
 
-        
     .modal-content input,
     .modal-content select {
         margin-bottom: 15px;
@@ -330,6 +343,15 @@
         font-weight: bold;
         cursor: pointer;
         transition: transform 0.8s ease;
+    }
+
+    .hidden-label {
+        display: none;
+        margin-top: 10px;
+    }
+
+    .inline-form {
+        margin-left: 20px;
     }
 </style>
 
@@ -395,7 +417,7 @@
     </select>
     </label>
 
-    <label id="other_relation_label" style="display:none; margin-top:10px;">
+    <label id="other_relation_label" class="hidden-label">
         Please specify:
         <input type="text" name="other_relation" id="other_relation" />
     </label>
@@ -429,7 +451,7 @@
                     <!-- Relationship type & arrow -->
                     <div class="relation-type-arrow">
                         <!-- Relationship -->
-                        <div style="font-weight: bold; font-size: 18px; color: #94693e; white-space: nowrap; width: 70px; text-align: center;">
+                        <div class="type">
                             {{ rel.relation_type }}
                         </div>
                         <!-- Arrow -->
@@ -521,7 +543,7 @@
             </select>
             </label>
 
-            <label id="edit_other_relation_label" style="display:none; margin-top:10px;">
+            <label id="edit_other_relation_label" class="hidden-label">
                 Please specify:
                 <input type="text" name="other_relation" id="edit_other_relation_input" />
             </label>
@@ -538,33 +560,37 @@
     </div>
 </div>
 
+
 <script>
+// Show or hide the "Other" input field based on the selected relationship type in the add form
 function checkOther(select) {
     const otherLabel = document.getElementById('other_relation_label');
     const otherInput = document.getElementById('other_relation');
     if (select.value === 'Other') {
-        otherLabel.style.display = 'block';
+        otherLabel.classList.remove('hidden-label');
         otherInput.setAttribute('required', 'required');
     } else {
-        otherLabel.style.display = 'none';
+        otherLabel.classList.add('hidden-label');
         otherInput.removeAttribute('required');
         otherInput.value = '';
     }
 }
 
+// Show or hide the "Other" input field based on the selected relationship type in the edit modal
 function checkOtherEdit(select) {
     const otherLabel = document.getElementById('edit_other_relation_label');
     const otherInput = document.getElementById('edit_other_relation_input');
     if (select.value === 'Other') {
-        otherLabel.style.display = 'block';
+        otherLabel.classList.remove('hidden-label');
         otherInput.setAttribute('required', 'required');
     } else {
-        otherLabel.style.display = 'none';
+        otherLabel.classList.add('hidden-label');
         otherInput.removeAttribute('required');
         otherInput.value = '';
     }
 }
 
+// Open the edit modal and pre-fill the form with the selected relationship data
 function openEditModal(id, catA, catB, relation, direction) {
     document.getElementById('edit_rel_id').value = id;
     document.getElementById('edit_catA_id').value = catA;
@@ -575,7 +601,6 @@ function openEditModal(id, catA, catB, relation, direction) {
     const otherLabel = document.getElementById('edit_other_relation_label');
     const otherInput = document.getElementById('edit_other_relation_input');
 
-
     document.getElementById('edit_direction').value = direction;
     document.getElementById('editModal').style.display = 'flex';
 }
@@ -584,61 +609,28 @@ function closeEditModal() {
   document.getElementById('editModal').style.display = 'none';
 }
 
-const catPhotos = {{ cat_photos|tojson }};   // Fetches the cat photos object and converts it to a JSON string for use in JavaScript
+// Adjust the size and shape of images in the graph when it is loaded
 document.addEventListener('DOMContentLoaded', function () {
-    const object = document.getElementById('cat-graph');    // Get the SVG object element
-    object.addEventListener('load', function () {
-        const svgDoc = object.contentDocument;    // Access the SVG document inside the object element
-        const nodes = svgDoc.querySelectorAll('text');    // Select all text elementss in the SVG document
-        let clipId = 0;    // Initialize a counter for unique clip IDs
-
-        nodes.forEach(node => {
-            if (node.textContent.trim() === '[PIC]') {    // Check if the text content is '[PIC]'
-                let texts = node.parentNode.querySelectorAll('text');    // Get all text elements within the same parent node
-                let nameNode = texts.length > 1 ? texts[1] : node;    // If there are multiple text elements, use the second one; otherwise, use the current node
-                let catName = nameNode.textContent.trim();
-                let imgUrl = catPhotos[catName];
-                if (!imgUrl) return;
-
-                let x = parseFloat(nameNode.getAttribute('x')) || 0;
-                let y = parseFloat(nameNode.getAttribute('y')) || 0;
-                let textLength = nameNode.getComputedTextLength ? nameNode.getComputedTextLength() : 0;
-                let centerX = x + textLength / 2;
-
-                const radius = 20;
-                const size = radius * 2;
-                const gap = 12;
-                const cx = centerX;
-                const cy = y - gap - radius;
-
-                const thisClipId = 'catclip' + (clipId++);
-                const clipPath = svgDoc.createElementNS('http://www.w3.org/2000/svg', 'clipPath');     
-                clipPath.setAttribute('id', thisClipId);
-
-                const circle = svgDoc.createElementNS('http://www.w3.org/2000/svg', 'circle');
-                circle.setAttribute('cx', cx);
-                circle.setAttribute('cy', cy);
-                circle.setAttribute('r', radius);
-                clipPath.appendChild(circle);
-
-                let defs = svgDoc.querySelector('defs');
-                if (!defs) {
-                    defs = svgDoc.createElementNS('http://www.w3.org/2000/svg', 'defs');
-                    svgDoc.documentElement.insertBefore(defs, svgDoc.documentElement.firstChild);
-                }
-                defs.appendChild(clipPath);
-
-                const img = svgDoc.createElementNS('http://www.w3.org/2000/svg', 'image');
-                img.setAttributeNS('http://www.w3.org/1999/xlink', 'href', imgUrl);
-                img.setAttribute('width', size);
-                img.setAttribute('height', size);
-                img.setAttribute('x', cx - radius);
-                img.setAttribute('y', cy - radius);
-                img.setAttribute('clip-path', `url(#${thisClipId})`);
-                img.setAttribute('preserveAspectRatio', 'xMidYMid slice');
-                node.parentNode.appendChild(img);
-                node.textContent = '';
-            }
+    const obj = document.getElementById('cat-graph');
+    obj.addEventListener('load', function () {
+        const svg = obj.contentDocument;
+        const defs = svg.querySelector('defs') || svg.documentElement.insertBefore(svg.createElementNS('http://www.w3.org/2000/svg', 'defs'), svg.documentElement.firstChild);
+        svg.querySelectorAll('image').forEach((img, i) => {
+            img.setAttribute('width', 50);
+            img.setAttribute('height', 50);
+            img.setAttribute('preserveAspectRatio', 'xMidYMid slice');
+            const x = parseFloat(img.getAttribute('x')) || 0;
+            const y = parseFloat(img.getAttribute('y')) || 0;
+            const r = 25;
+            const clip = svg.createElementNS('http://www.w3.org/2000/svg', 'clipPath');
+            clip.id = 'c'+i;
+            const circle = svg.createElementNS('http://www.w3.org/2000/svg', 'circle');
+            circle.setAttribute('cx', x + 25);
+            circle.setAttribute('cy', y + 25);
+            circle.setAttribute('r', r);
+            clip.appendChild(circle);
+            defs.appendChild(clip);
+            img.setAttribute('clip-path', `url(#c${i})`);
         });
     });
 });
