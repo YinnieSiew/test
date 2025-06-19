@@ -19,16 +19,12 @@ def get_db_connection():
 def get_cat_photos(all_cats):
     cat_photos = {}
     default_image = os.path.join(current_app.static_folder, 'uploads', 'default.png')
-
     for cat in all_cats:
         photo_filename = cat['photo'] if cat['photo'] else 'default.png'
         image_path = os.path.join(current_app.static_folder, 'uploads', photo_filename)
-
         if not os.path.exists(image_path):
             image_path = default_image
-
-        cat_photos[cat['name']] = image_path
-
+        cat_photos[cat['name']] = photo_filename
     return cat_photos
 
 #generate the relationship graph
@@ -50,7 +46,9 @@ def generate_graph(relations, cat_photos, filename='cat_relationship_tree'):
             (rel['catB_id'], rel['catB_name'], rel['catB_photo'])
         ]:
             if cat_name not in added_nodes:
-                photo_path = cat_photos.get(cat_name)
+                photo_url = cat_photos.get(cat_name)
+                photo_filename = os.path.basename(photo_url) 
+                photo_path = os.path.join(current_app.static_folder, 'uploads', photo_filename)
                 label = f'''<   
                 <TABLE BORDER="0" CELLBORDER="0" CELLSPACING="0">
                 <TR><TD FIXEDSIZE="TRUE" WIDTH="50" HEIGHT="50"><IMG SRC="{photo_path}" SCALE="TRUE"/></TD></TR>
