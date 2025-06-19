@@ -18,13 +18,11 @@ def get_db_connection():
 
 def get_cat_photos(all_cats):
     cat_photos = {}
-    default_image = os.path.join(current_app.static_folder, 'uploads', 'default.png')
     for cat in all_cats:
-        photo_filename = cat['photo'] if cat['photo'] else 'default.png'
-        image_path = os.path.join(current_app.static_folder, 'uploads', photo_filename)
-        if not os.path.exists(image_path):
-            image_path = default_image
-        cat_photos[cat['name']] = photo_filename
+        if cat['photo'] and os.path.exists(os.path.join(current_app.static_folder, 'uploads', cat['photo'])):
+            cat_photos[cat['name']] = os.path.join(current_app.static_folder, 'uploads', cat['photo'])
+        else:
+            cat_photos[cat['name']] = os.path.join(current_app.static_folder, 'uploads', 'default.png')
     return cat_photos
 
 #generate the relationship graph
