@@ -2,6 +2,7 @@ import os
 import sqlite3
 import random
 import re
+import requests
 from flask import flash, Blueprint, render_template, request, redirect, url_for, current_app
 from flask_login import current_user
 from graphviz import Digraph
@@ -19,11 +20,27 @@ def get_db_connection():
 def get_cat_photos(all_cats):
     cat_photos = {}
     for cat in all_cats:
-        if cat['photo'] and os.path.exists(os.path.join(current_app.static_folder, 'uploads', cat['photo'])):
-            cat_photos[cat['name']] = os.path.join(current_app.static_folder, 'uploads', cat['photo'])
+        photo = cat['photo']
+        if photo and (photo.startswith('http://') or photo.startswith('https://')):
+            photo_path = download_image_if_url(photo, cat['id'])
+            cat_photos[cat['name']] = photo_path
+        elif photo and os.path.exists(os.path.join(current_app.static_folder, 'uploads', photo)):
+            cat_photos[cat['name']] = os.path.join(current_app.static_folder, 'uploads', photo)
         else:
             cat_photos[cat['name']] = os.path.join(current_app.static_folder, 'uploads', 'default.png')
     return cat_photos
+
+def download_image_if_url(photo_url, cat_id):
+    if photo_url.startswith(('http://', 'https://')):
+        ext = photo_url.split('.')[-1].split('?')[0]
+        filename = f'cat_{cat_id}.{ext}'
+        path = os.path.join(current_app.static_folder, 'uploads', filename)
+        try:
+            with open(path, 'wb') as f:
+                f.write(requests.get(photo_url).content)
+        except: pass
+        return path
+    return os.path.join(current_app.static_folder, 'uploads', photo_url)
 
 #generate the relationship graph
 def generate_graph(relations, cat_photos, filename='cat_relationship_tree'):
@@ -50,7 +67,7 @@ def generate_graph(relations, cat_photos, filename='cat_relationship_tree'):
                 label = f'''<   
                 <TABLE BORDER="0" CELLBORDER="0" CELLSPACING="0">
                 <TR><TD FIXEDSIZE="TRUE" WIDTH="50" HEIGHT="50"><IMG SRC="{photo_path}" SCALE="TRUE"/></TD></TR>
-                <TR><TD HEIGHT="30">{cat_name}</TD></TR>
+                <TR><TD HEIGHT="20">{cat_name}</TD></TR>
                 </TABLE>
                 >'''
                 dot.node(cat_name, label=label)  # Add cat to the graph with label (relationship type)
