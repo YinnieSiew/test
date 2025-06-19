@@ -53,21 +53,19 @@ def generate_graph(relations, cat_photos, filename='cat_relationship_tree'):
     dot.attr('node', shape="none", margin='0.1,0.1')
     dot.attr('edge', arrowsize='0.5', penwidth='0.7')
 
-    added_nodes = set()    #
-    
+    added_nodes = set()    # Used to track added nodes to prevent duplication
+
     for rel in relations:
         for cat_id, cat_name, cat_photo in [
             (rel['catA_id'], rel['catA_name'], rel['catA_photo']),
             (rel['catB_id'], rel['catB_name'], rel['catB_photo'])
         ]:
             if cat_name not in added_nodes:
-                photo_url = cat_photos.get(cat_name)
-                photo_filename = os.path.basename(photo_url) 
-                photo_path = os.path.join(current_app.static_folder, 'uploads', photo_filename)
+                photo_path = cat_photos.get(cat_name)
                 label = f'''<   
                 <TABLE BORDER="0" CELLBORDER="0" CELLSPACING="0">
                 <TR><TD FIXEDSIZE="TRUE" WIDTH="50" HEIGHT="50"><IMG SRC="{photo_path}" SCALE="TRUE"/></TD></TR>
-                <TR><TD HEIGHT="20">{cat_name}</TD></TR>
+                <TR><TD HEIGHT="30">{cat_name}</TD></TR>
                 </TABLE>
                 >'''
                 dot.node(cat_name, label=label)  # Add cat to the graph with label (relationship type)
